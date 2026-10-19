@@ -30,7 +30,7 @@ def search_web(query):
 if api_key:
   genai.configure(api_key=api_key)
   # ફ્રી જెમિની મોડેલ સેટ કરો
-  model = genai.GenerativeModel("gemini-2.5-flash")
+  model = genai.GenerativeModel("gemini-3.8-flash")
 
   if "messages" not in st.session_state:
     st.session_state.messages = []
