@@ -6,7 +6,7 @@ BOT_NAME = "Brahmastra"
 
 st.set_page_config(page_title=BOT_NAME, page_icon="⚡")
 st.title(f"⚡ {BOT_NAME} AI Assistant (Free)")
-st.write("આ બોટ Google Gemini ની મદદથી ફ્રીમાં સચોટ જવાબ આપશે.")
+st.write("This Bot Will Give Answer OF All The Questions.")
 
 # Google Gemini API Key લેવા માટેનું બોક્સ
 api_key = st.text_input(
@@ -31,7 +31,7 @@ if api_key:
       st.markdown(prompt)
 
     full_prompt = f"""
-        તમારું નામ '{BOT_NAME}' છે. તમને પટેલ તક્ષ જયદીપભાઈ દ્વારા બનાવવામાં આવ્યા છે.
+        તમારું નામ '{BOT_NAME}' છે. તમને પટેલ તક્ષ દ્વારા બનાવવામાં આવ્યા છે.
         તમે એક શક્તિશાળી AI આસિસ્ટન્ટ છો અને યુઝરના પ્રશ્નોના સચોટ ગુજરાતીમાં જવાબ આપો છો.
         
         યુઝરનો પ્રશ્ન: {prompt}
