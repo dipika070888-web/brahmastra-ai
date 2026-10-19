@@ -1,5 +1,4 @@
 import google.generativeai as genai
-from duckduckgo_search import DDGS
 import streamlit as st
 
 # --- સેટિંગ્સ ---
@@ -7,30 +6,17 @@ BOT_NAME = "Brahmastra"
 
 st.set_page_config(page_title=BOT_NAME, page_icon="⚡")
 st.title(f"⚡ {BOT_NAME} AI Assistant (Free)")
-st.write(
-    "આ બોટ Google Gemini અને DuckDuckGo ની મદદથી ફ્રીમાં લાઈવ જવાબ આપશે."
-)
+st.write("આ બોટ Google Gemini ની મદદથી ફ્રીમાં સચોટ જવાબ આપશે.")
 
 # Google Gemini API Key લેવા માટેનું બોક્સ
 api_key = st.text_input(
     "તમારી ફ્રી Google Gemini API Key અહીં નાખો:", type="password"
 )
 
-
-# ઇન્ટરનેટ સર્ચ માટેનું ફંક્શન
-def search_web(query):
-  try:
-    with DDGS() as ddgs:
-      results = [r["body"] for r in ddgs.text(query, max_results=3)]
-      return " ".join(results)
-  except Exception as e:
-    return ""
-
-
 if api_key:
   genai.configure(api_key=api_key)
-  # ફ્રી જెમિની મોડેલ સેટ કરો
-  model = genai.GenerativeModel("gemini-3.8-flash")
+  # સ્ટેબલ ફ્રી મોડેલ સેટ કરો
+  model = genai.GenerativeModel("gemini-1.5-flash")
 
   if "messages" not in st.session_state:
     st.session_state.messages = []
@@ -44,22 +30,17 @@ if api_key:
     with st.chat_message("user"):
       st.markdown(prompt)
 
-    with st.spinner("Brahmastra ઇન્ટરનેટ પર સર્ચ કરી રહ્યો છે..."):
-      search_results = search_web(prompt)
-
     full_prompt = f"""
         તમારું નામ '{BOT_NAME}' છે. તમને પટેલ તક્ષ જયદીપભાઈ દ્વારા બનાવવામાં આવ્યા છે.
-        તમે ઇન્ટરનેટ પરથી લાઈવ માહિતી શોધીને સચોટ ગુજરાતીમાં જવાબ આપનાર AI આસિસ્ટન્ટ છો.
-        
-        ઇન્ટરનેટ સર્ચ પરિણામો:
-        {search_results}
+        તમે એક શક્તિશાળી AI આસિસ્ટન્ટ છો અને યુઝરના પ્રશ્નોના સચોટ ગુજરાતીમાં જવાબ આપો છો.
         
         યુઝરનો પ્રશ્ન: {prompt}
         """
 
     try:
-      response = model.generate_content(full_prompt)
-      bot_response = response.text
+      with st.spinner("Brahmastra વિચારી રહ્યો છે..."):
+        response = model.generate_content(full_prompt)
+        bot_response = response.text
 
       with st.chat_message("assistant"):
         st.markdown(bot_response)
