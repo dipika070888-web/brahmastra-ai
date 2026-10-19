@@ -6,8 +6,7 @@ BOT_NAME = "Brahmastra"
 
 st.set_page_config(page_title=BOT_NAME, page_icon="⚡")
 st.title(f"⚡ {BOT_NAME} AI Assistant")
-st.write("Welcome!! 
-This Bot Will Give Answer OF All The Questions.")
+st.write("Welcome!! This Bot Will Give Answer OF All The Questions.")
 
 # Google Gemini API Key લેવા માટેનું બોક્સ
 api_key = st.text_input(
