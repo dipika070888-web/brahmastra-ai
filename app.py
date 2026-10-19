@@ -1,19 +1,20 @@
+import google.generativeai as genai
 from duckduckgo_search import DDGS
-import openai
 import streamlit as st
 
 # --- સેટિંગ્સ ---
 BOT_NAME = "Brahmastra"
 
-# Streamlit પેજ સેટઅપ
 st.set_page_config(page_title=BOT_NAME, page_icon="⚡")
-st.title(f"⚡ {BOT_NAME} AI Assistant")
+st.title(f"⚡ {BOT_NAME} AI Assistant (Free)")
 st.write(
-    "આ બોટ ઇન્ટરનેટ પરથી લાઈવ માહિતી શોધીને તમને ગુજરાતીમાં જવાબ આપશે."
+    "આ બોટ Google Gemini અને DuckDuckGo ની મદદથી ફ્રીમાં લાઈવ જવાબ આપશે."
 )
 
-# OpenAI API Key લેવા માટે
-api_key = st.text_input("તમારી OpenAI API Key અહીં નાખો:", type="password")
+# Google Gemini API Key લેવા માટેનું બોક્સ
+api_key = st.text_input(
+    "તમારી ફ્રી Google Gemini API Key અહીં નાખો:", type="password"
+)
 
 
 # ઇન્ટરનેટ સર્ચ માટેનું ફંક્શન
@@ -23,11 +24,13 @@ def search_web(query):
       results = [r["body"] for r in ddgs.text(query, max_results=3)]
       return " ".join(results)
   except Exception as e:
-    return f"સર્ચ કરવામાં ભૂલ આવી: {e}"
+    return ""
 
 
 if api_key:
-  client = openai.OpenAI(api_key=api_key)
+  genai.configure(api_key=api_key)
+  # ફ્રી જెમિની મોડેલ સેટ કરો
+  model = genai.GenerativeModel("gemini-1.5-flash")
 
   if "messages" not in st.session_state:
     st.session_state.messages = []
@@ -44,25 +47,19 @@ if api_key:
     with st.spinner("Brahmastra ઇન્ટરનેટ પર સર્ચ કરી રહ્યો છે..."):
       search_results = search_web(prompt)
 
-    # સિસ્ટમ પ્રોમ્પ્ટ - બોટનું નામ અને બનાવનારની માહિતી સાથે
-    system_prompt = f"""
-        તમારું નામ '{BOT_NAME}' છે. તમને Patel Taksh Jaydeepbhai દ્વારા બનાવવામાં આવ્યા છે.
+    full_prompt = f"""
+        તમારું નામ '{BOT_NAME}' છે. તમને પટેલ તક્ષ જયદીપભાઈ દ્વારા બનાવવામાં આવ્યા છે.
         તમે ઇન્ટરનેટ પરથી લાઈવ માહિતી શોધીને સચોટ ગુજરાતીમાં જવાબ આપનાર AI આસિસ્ટન્ટ છો.
         
         ઇન્ટરનેટ સર્ચ પરિણામો:
         {search_results}
+        
+        યુઝરનો પ્રશ્ન: {prompt}
         """
 
     try:
-      messages = [{"role": "system", "content": system_prompt}] + [
-          {"role": m["role"], "content": m["content"]}
-          for m in st.session_state.messages
-      ]
-
-      response = client.chat.completions.create(
-          model="gpt-3.5-turbo", messages=messages
-      )
-      bot_response = response.choices[0].message.content
+      response = model.generate_content(full_prompt)
+      bot_response = response.text
 
       with st.chat_message("assistant"):
         st.markdown(bot_response)
@@ -73,4 +70,7 @@ if api_key:
     except Exception as e:
       st.error(f"એરર આવી: {e}")
 else:
-  st.warning("શરૂ કરવા માટે તમારી OpenAI API Key દાખલ કરો.")
+  st.warning(
+      "શરૂ કરવા માટે તમારી ફ્રી Google Gemini API Key દાખલ કરો (Google AI"
+      " Studio પરથી મફતમાં મળે છે)."
+  )
