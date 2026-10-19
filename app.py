@@ -5,12 +5,12 @@ import streamlit as st
 BOT_NAME = "Brahmastra"
 
 st.set_page_config(page_title=BOT_NAME, page_icon="⚡")
-st.title(f"⚡ {BOT_NAME} AI Assistant (Free)")
+st.title(f"⚡ {BOT_NAME} AI Assistant")
 st.write("This Bot Will Give Answer OF All The Questions.")
 
 # Google Gemini API Key લેવા માટેનું બોક્સ
 api_key = st.text_input(
-    "તમારી ફ્રી Google Gemini API Key અહીં નાખો:", type="password"
+    "Insert Youer API Key:", type="password"
 )
 
 if api_key:
