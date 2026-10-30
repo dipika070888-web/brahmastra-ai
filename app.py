@@ -16,6 +16,15 @@ try:
   genai.configure(api_key=api_key)
   # અહીં મોડેલનું નામ અપડેટ કર્યું છે જે 100% કામ કરશે
   model = genai.GenerativeModel("gemini-3.8-flash")
+    # સુપર ફાસ્ટ રિસ્પોન્સ માટે સેટિંગ્સ
+generation_config = {
+    "temperature": 0.7,
+    "max_output_tokens": 800,  # જવાબ લાંબો ખેંચાય નહીં અને ઝડપથી આવે
+}
+
+model = genai.GenerativeModel(
+    model_name="gemini-1.5-flash", generation_config=generation_config
+)
   is_configured = True
 except Exception as e:
   is_configured = False
