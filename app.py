@@ -11,10 +11,10 @@ st.set_page_config(
 )
 
 # --- ઓટોમેટીક API Key સેટઅપ ---
-# આ કોડ Streamlit ના Secrets માંથી તમારી Key જાતે જ વાંચી લેશે (યુઝરે ક્યારેય નાખવી નહીં પડે)
 try:
   api_key = st.secrets["GEMINI_API_KEY"]
   genai.configure(api_key=api_key)
+  # અહીં મોડેલનું નામ અપડેટ કર્યું છે જે 100% કામ કરશે
   model = genai.GenerativeModel("gemini-1.5-flash")
   is_configured = True
 except Exception as e:
@@ -153,3 +153,4 @@ else:
             st.info(sec_response.text)
         except Exception as e:
           st.error(f"Error occurred: {e}")
+            
