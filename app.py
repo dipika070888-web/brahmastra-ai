@@ -15,7 +15,7 @@ try:
   api_key = st.secrets["GEMINI_API_KEY"]
   genai.configure(api_key=api_key)
   # અહીં મોડેલનું નામ અપડેટ કર્યું છે જે 100% કામ કરશે
-  model = genai.GenerativeModel("gemini-2.5-flash")
+  model = genai.GenerativeModel("gemini-3.8-flash")
   is_configured = True
 except Exception as e:
   is_configured = False
