@@ -10,21 +10,18 @@ st.set_page_config(
     page_title=f"{BOT_NAME} AI Super App", page_icon="⚡", layout="wide"
 )
 
-# --- ઓટોમેટીક API Key સેટઅપ ---
+# --- ઓટોમેટીક API Key અને સ્પીડ સેટઅપ ---
+is_configured = False
 try:
   api_key = st.secrets["GEMINI_API_KEY"]
   genai.configure(api_key=api_key)
-  # અહીં મોડેલનું નામ અપડેટ કર્યું છે જે 100% કામ કરશે
-  model = genai.GenerativeModel("gemini-3.8-flash")
-    # સુપર ફાસ્ટ રિસ્પોન્સ માટે સેટિંગ્સ
-generation_config = {
-    "temperature": 0.7,
-    "max_output_tokens": 800,  # જવાબ લાંબો ખેંચાય નહીં અને ઝડપથી આવે
-}
 
-model = genai.GenerativeModel(
-    model_name="gemini-1.5-flash", generation_config=generation_config
-)
+  # સુપર ફાસ્ટ રિસ્પોન્સ માટે કન્ફિગરેશન
+  generation_config = {"temperature": 0.7, "max_output_tokens": 1000}
+
+  model = genai.GenerativeModel(
+      model_name="gemini-1.5-flash", generation_config=generation_config
+  )
   is_configured = True
 except Exception as e:
   is_configured = False
@@ -55,7 +52,7 @@ else:
 
   # ---------------- 1. CHATBOT MODE ----------------
   if mode == "💬 Smart Chatbot":
-    st.subheader("💬 Smart Chat (Starts in English, supports any language)")
+    st.subheader("💬 Smart Chat (Super Fast, supports any language)")
 
     if "messages" not in st.session_state:
       st.session_state.messages = []
@@ -71,7 +68,7 @@ else:
 
       full_prompt = f"""
             Your name is '{BOT_NAME}'. You were created by {CREATOR_NAME}.
-            You are an extremely intelligent and helpful AI assistant. 
+            You are an extremely intelligent, fast, and helpful AI assistant. 
             You can understand and reply in ANY language requested by the user. 
             If the user speaks in English, reply in English. If they speak in Gujarati, Hindi, or any other language, reply fluently in that exact language.
             
@@ -162,4 +159,3 @@ else:
             st.info(sec_response.text)
         except Exception as e:
           st.error(f"Error occurred: {e}")
-            
