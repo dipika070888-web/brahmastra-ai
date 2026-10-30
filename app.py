@@ -10,17 +10,22 @@ st.set_page_config(
     page_title=f"{BOT_NAME} AI Super App", page_icon="⚡", layout="wide"
 )
 
-# --- ઓટોમેટીક API Key અને સ્પીડ સેટઅપ ---
+# --- ઓટોમેટીક API Key અને અલ્ટ્રા-ફાસ્ટ સ્પીડ સેટઅપ ---
 is_configured = False
 try:
   api_key = st.secrets["GEMINI_API_KEY"]
   genai.configure(api_key=api_key)
 
-  # સુપર ફાસ્ટ રિસ્પોન્સ માટે કન્ફિગરેશન
-  generation_config = {"temperature": 0.7, "max_output_tokens": 1000}
+  # અલ્ટ્રા ફાસ્ટ રિસ્પોન્સ કન્ફિગરેશન (લેટેસ્ટ સ્પીડ ઓપ્ટિમાઇઝેશન)
+  generation_config = {
+      "temperature": 0.5,  # ઓછું ટેમ્પરેચર એટલે સચોટ અને ઝડપી જવાબ
+      "max_output_tokens": 600,  # ટૂંકો અને સ્પીડી આઉટપુટ
+      "top_p": 0.8,
+      "top_k": 40,
+  }
 
   model = genai.GenerativeModel(
-      model_name="gemini-3.8-flash", generation_config=generation_config
+      model_name="gemini-1.5-flash", generation_config=generation_config
   )
   is_configured = True
 except Exception as e:
@@ -52,7 +57,7 @@ else:
 
   # ---------------- 1. CHATBOT MODE ----------------
   if mode == "💬 Smart Chatbot":
-    st.subheader("💬 Smart Chat (Super Fast, supports any language)")
+    st.subheader("💬 Smart Chat (Ultra Fast, supports any language)")
 
     if "messages" not in st.session_state:
       st.session_state.messages = []
@@ -66,17 +71,10 @@ else:
       with st.chat_message("user"):
         st.markdown(prompt)
 
-      full_prompt = f"""
-            Your name is '{BOT_NAME}'. You were created by {CREATOR_NAME}.
-            You are an extremely intelligent, fast, and helpful AI assistant. 
-            You can understand and reply in ANY language requested by the user. 
-            If the user speaks in English, reply in English. If they speak in Gujarati, Hindi, or any other language, reply fluently in that exact language.
-            
-            User's input: {prompt}
-            """
+      full_prompt = f"Answer quickly and accurately. User language/input: {prompt}"
 
       try:
-        with st.spinner(f"{BOT_NAME} is thinking..."):
+        with st.spinner("Kian is typing..."):
           response = model.generate_content(full_prompt)
           bot_response = response.text
 
@@ -109,7 +107,7 @@ else:
 
       if st.button("🔍 Analyze Image"):
         try:
-          with st.spinner(f"{BOT_NAME} is analyzing the image..."):
+          with st.spinner("Analyzing image..."):
             response = model.generate_content([user_img_prompt, image])
             st.success("Analysis Complete!")
             st.markdown("### 📝 Result:")
@@ -127,8 +125,10 @@ else:
     if st.button("⚡ Summarize Text"):
       if doc_text.strip() != "":
         try:
-          with st.spinner(f"{BOT_NAME} is generating summary..."):
-            sum_prompt = f"Read this text and provide an accurate and clear summary with key points in the same language as the text:\n\n{doc_text}"
+          with st.spinner("Generating summary..."):
+            sum_prompt = (
+                "Provide a clear, fast summary with key points:\n\n" + doc_text
+            )
             response = model.generate_content(sum_prompt)
             st.success("Summary Ready!")
             st.markdown(response.text)
@@ -144,16 +144,12 @@ else:
 
     if st.button("🛡️ Scan with Security Shield"):
       if user_content.strip() != "":
-        sec_prompt = f"""
-                You are 'Kian Security Shield'. You were created by {CREATOR_NAME} for safety and security.
-                Analyze the following text/link/code and provide a security report:
-                1. Are there any hacking risks, malware, or phishing links?
-                2. Are there any sensitive passwords or private info leaked?
-                
-                Text to analyze: {user_content}
-                """
+        sec_prompt = (
+            "Analyze for hacking risks, malware, or security leaks quickly:\n\n"
+            + user_content
+        )
         try:
-          with st.spinner(f"{BOT_NAME} Security Wall is scanning..."):
+          with st.spinner("Security Wall scanning..."):
             sec_response = model.generate_content(sec_prompt)
             st.success("Security Audit Complete!")
             st.info(sec_response.text)
