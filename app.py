@@ -20,7 +20,7 @@ try:
   generation_config = {"temperature": 0.7, "max_output_tokens": 1000}
 
   model = genai.GenerativeModel(
-      model_name="gemini-1.5-flash", generation_config=generation_config
+      model_name="gemini-3.8-flash", generation_config=generation_config
   )
   is_configured = True
 except Exception as e:
